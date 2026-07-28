@@ -1,0 +1,59 @@
+# Environment
+.env
+*.env.local
+*.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Node / Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+*.js.LICENSE.txt
+
+# Models (large binary files)
+models/
+
+# Docker volumes
+docker/volumes/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Logs
+*.log
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Audio recordings
+*.wav
+*.mp3
+*.fl

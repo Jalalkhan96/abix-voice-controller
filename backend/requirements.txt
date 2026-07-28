@@ -1,0 +1,36 @@
+fastapi
+uvicorn[standard]
+websockets
+python-dotenv
+pyyaml
+sqlalchemy
+aiosqlite
+
+# Voice
+faster-whisper
+openwakeword
+piper-tts
+sounddevice
+numpy
+
+# Automation
+pyautogui
+pynput
+psutil
+
+# Vision
+mediapipe
+opencv-python
+
+# NLU
+ollama
+httpx
+
+# Semantic Search (Phase 4)
+chromadb
+sentence-transformers
+
+# Testing
+pytest
+pytest-asyncio
+httpx

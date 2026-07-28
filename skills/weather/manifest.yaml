@@ -1,0 +1,11 @@
+name: weather
+version: "0.1.0"
+description: "Get current weather information"
+author: "ABIX Team"
+enabled: true
+commands:
+  - trigger: "what's the weather"
+    description: "Get current weather"
+  - trigger: "weather forecast"
+    description: "Get weather forecast"
+module: weather_skill

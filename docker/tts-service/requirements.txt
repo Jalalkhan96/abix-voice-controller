@@ -1,0 +1,5 @@
+piper-tts
+pyttsx3
+fastapi
+uvicorn[standard]
+numpy

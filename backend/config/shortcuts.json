@@ -1,0 +1,614 @@
+[
+  {
+    "keyword": "SAD",
+    "browser": "brave-browser",
+    "url": "https://music.youtube.com/watch?v=xhliZ83ltuY&list=RDAMVMxhliZ83ltuY",
+    "description": "Sad Music Playlist"
+  },
+  {
+    "keyword": "GOOGLE",
+    "browser": "brave-browser",
+    "url": "https://www.google.com",
+    "description": "Google Search"
+  },
+  {
+    "keyword": "GMAIL",
+    "browser": "brave-browser",
+    "url": "https://mail.google.com",
+    "description": "Gmail"
+  },
+  {
+    "keyword": "MAPS",
+    "browser": "brave-browser",
+    "url": "https://maps.google.com",
+    "description": "Google Maps"
+  },
+  {
+    "keyword": "DRIVE",
+    "browser": "brave-browser",
+    "url": "https://drive.google.com",
+    "description": "Google Drive"
+  },
+  {
+    "keyword": "CALENDAR",
+    "browser": "brave-browser",
+    "url": "https://calendar.google.com",
+    "description": "Google Calendar"
+  },
+  {
+    "keyword": "KEEP",
+    "browser": "brave-browser",
+    "url": "https://keep.google.com",
+    "description": "Google Keep Notes"
+  },
+  {
+    "keyword": "TRANSLATE",
+    "browser": "brave-browser",
+    "url": "https://translate.google.com",
+    "description": "Google Translate"
+  },
+  {
+    "keyword": "PHOTOS",
+    "browser": "brave-browser",
+    "url": "https://photos.google.com",
+    "description": "Google Photos"
+  },
+  {
+    "keyword": "NEWS",
+    "browser": "brave-browser",
+    "url": "https://news.google.com",
+    "description": "Google News"
+  },
+  {
+    "keyword": "SCHOLAR",
+    "browser": "brave-browser",
+    "url": "https://scholar.google.com",
+    "description": "Google Scholar"
+  },
+  {
+    "keyword": "DOCS",
+    "browser": "brave-browser",
+    "url": "https://docs.google.com",
+    "description": "Google Docs"
+  },
+  {
+    "keyword": "SHEETS",
+    "browser": "brave-browser",
+    "url": "https://sheets.google.com",
+    "description": "Google Sheets"
+  },
+  {
+    "keyword": "SLIDES",
+    "browser": "brave-browser",
+    "url": "https://slides.google.com",
+    "description": "Google Slides"
+  },
+  {
+    "keyword": "CLASSROOM",
+    "browser": "brave-browser",
+    "url": "https://classroom.google.com",
+    "description": "Google Classroom"
+  },
+  {
+    "keyword": "MEET",
+    "browser": "brave-browser",
+    "url": "https://meet.google.com",
+    "description": "Google Meet"
+  },
+  {
+    "keyword": "CHAT",
+    "browser": "brave-browser",
+    "url": "https://web.whatsapp.com",
+    "description": "WhatsApp Web"
+  },
+  {
+    "keyword": "YOUTUBE",
+    "browser": "brave-browser",
+    "url": "https://www.youtube.com",
+    "description": "YouTube"
+  },
+  {
+    "keyword": "MUSIC",
+    "browser": "brave-browser",
+    "url": "https://music.youtube.com",
+    "description": "YouTube Music"
+  },
+  {
+    "keyword": "SPOTIFY",
+    "browser": "brave-browser",
+    "url": "https://open.spotify.com",
+    "description": "Spotify"
+  },
+  {
+    "keyword": "NETFLIX",
+    "browser": "brave-browser",
+    "url": "https://www.netflix.com",
+    "description": "Netflix"
+  },
+  {
+    "keyword": "PRIME",
+    "browser": "brave-browser",
+    "url": "https://www.primevideo.com",
+    "description": "Amazon Prime Video"
+  },
+  {
+    "keyword": "DISNEY",
+    "browser": "brave-browser",
+    "url": "https://www.disneyplus.com",
+    "description": "Disney Plus"
+  },
+  {
+    "keyword": "TWITTER",
+    "browser": "brave-browser",
+    "url": "https://x.com",
+    "description": "X (Twitter)"
+  },
+  {
+    "keyword": "FACEBOOK",
+    "browser": "brave-browser",
+    "url": "https://www.facebook.com",
+    "description": "Facebook"
+  },
+  {
+    "keyword": "INSTAGRAM",
+    "browser": "brave-browser",
+    "url": "https://www.instagram.com",
+    "description": "Instagram"
+  },
+  {
+    "keyword": "LINKEDIN",
+    "browser": "brave-browser",
+    "url": "https://www.linkedin.com",
+    "description": "LinkedIn"
+  },
+  {
+    "keyword": "REDDIT",
+    "browser": "brave-browser",
+    "url": "https://www.reddit.com",
+    "description": "Reddit"
+  },
+  {
+    "keyword": "TIKTOK",
+    "browser": "brave-browser",
+    "url": "https://www.tiktok.com",
+    "description": "TikTok"
+  },
+  {
+    "keyword": "PINTEREST",
+    "browser": "brave-browser",
+    "url": "https://www.pinterest.com",
+    "description": "Pinterest"
+  },
+  {
+    "keyword": "THREADS",
+    "browser": "brave-browser",
+    "url": "https://www.threads.net",
+    "description": "Threads"
+  },
+  {
+    "keyword": "SLACK",
+    "browser": "brave-browser",
+    "url": "https://slack.com",
+    "description": "Slack"
+  },
+  {
+    "keyword": "DISCORD",
+    "browser": "brave-browser",
+    "url": "https://discord.com/app",
+    "description": "Discord"
+  },
+  {
+    "keyword": "TEAMS",
+    "browser": "brave-browser",
+    "url": "https://teams.microsoft.com",
+    "description": "Microsoft Teams"
+  },
+  {
+    "keyword": "ZOOM",
+    "browser": "brave-browser",
+    "url": "https://zoom.us",
+    "description": "Zoom"
+  },
+  {
+    "keyword": "TELEGRAM",
+    "browser": "brave-browser",
+    "url": "https://web.telegram.org",
+    "description": "Telegram Web"
+  },
+  {
+    "keyword": "OUTLOOK",
+    "browser": "brave-browser",
+    "url": "https://outlook.live.com",
+    "description": "Outlook Mail"
+  },
+  {
+    "keyword": "AMAZON",
+    "browser": "brave-browser",
+    "url": "https://www.amazon.com",
+    "description": "Amazon Shopping"
+  },
+  {
+    "keyword": "EBAY",
+    "browser": "brave-browser",
+    "url": "https://www.ebay.com",
+    "description": "eBay"
+  },
+  {
+    "keyword": "WALMART",
+    "browser": "brave-browser",
+    "url": "https://www.walmart.com",
+    "description": "Walmart"
+  },
+  {
+    "keyword": "TARGET",
+    "browser": "brave-browser",
+    "url": "https://www.target.com",
+    "description": "Target"
+  },
+  {
+    "keyword": "BESTBUY",
+    "browser": "brave-browser",
+    "url": "https://www.bestbuy.com",
+    "description": "Best Buy"
+  },
+  {
+    "keyword": "NEWEGG",
+    "browser": "brave-browser",
+    "url": "https://www.newegg.com",
+    "description": "Newegg"
+  },
+  {
+    "keyword": "ALIEXPRESS",
+    "browser": "brave-browser",
+    "url": "https://www.aliexpress.com",
+    "description": "AliExpress"
+  },
+  {
+    "keyword": "FLIPKART",
+    "browser": "brave-browser",
+    "url": "https://www.flipkart.com",
+    "description": "Flipkart"
+  },
+  {
+    "keyword": "FLIGHTS",
+    "browser": "brave-browser",
+    "url": "https://www.google.com/travel/flights",
+    "description": "Google Flights"
+  },
+  {
+    "keyword": "BOOKING",
+    "browser": "brave-browser",
+    "url": "https://www.booking.com",
+    "description": "Booking.com"
+  },
+  {
+    "keyword": "AIRBNB",
+    "browser": "brave-browser",
+    "url": "https://www.airbnb.com",
+    "description": "Airbnb"
+  },
+  {
+    "keyword": "UBER",
+    "browser": "brave-browser",
+    "url": "https://www.uber.com",
+    "description": "Uber"
+  },
+  {
+    "keyword": "TRIP",
+    "browser": "brave-browser",
+    "url": "https://www.tripadvisor.com",
+    "description": "TripAdvisor"
+  },
+  {
+    "keyword": "STOCKS",
+    "browser": "brave-browser",
+    "url": "https://finance.yahoo.com",
+    "description": "Yahoo Finance"
+  },
+  {
+    "keyword": "COINBASE",
+    "browser": "brave-browser",
+    "url": "https://www.coinbase.com",
+    "description": "Coinbase"
+  },
+  {
+    "keyword": "CRYPTO",
+    "browser": "brave-browser",
+    "url": "https://coinmarketcap.com",
+    "description": "CoinMarketCap"
+  },
+  {
+    "keyword": "PAYPAL",
+    "browser": "brave-browser",
+    "url": "https://www.paypal.com",
+    "description": "PayPal"
+  },
+  {
+    "keyword": "GITHUB",
+    "browser": "brave-browser",
+    "url": "https://github.com",
+    "description": "GitHub"
+  },
+  {
+    "keyword": "GITLAB",
+    "browser": "brave-browser",
+    "url": "https://gitlab.com",
+    "description": "GitLab"
+  },
+  {
+    "keyword": "STACK",
+    "browser": "brave-browser",
+    "url": "https://stackoverflow.com",
+    "description": "Stack Overflow"
+  },
+  {
+    "keyword": "NPM",
+    "browser": "brave-browser",
+    "url": "https://www.npmjs.com",
+    "description": "NPM"
+  },
+  {
+    "keyword": "PYPI",
+    "browser": "brave-browser",
+    "url": "https://pypi.org",
+    "description": "Python Package Index"
+  },
+  {
+    "keyword": "DOCKER",
+    "browser": "brave-browser",
+    "url": "https://hub.docker.com",
+    "description": "Docker Hub"
+  },
+  {
+    "keyword": "AWS",
+    "browser": "brave-browser",
+    "url": "https://aws.amazon.com",
+    "description": "Amazon Web Services"
+  },
+  {
+    "keyword": "VERCEL",
+    "browser": "brave-browser",
+    "url": "https://vercel.com",
+    "description": "Vercel"
+  },
+  {
+    "keyword": "NETLIFY",
+    "browser": "brave-browser",
+    "url": "https://app.netlify.com",
+    "description": "Netlify"
+  },
+  {
+    "keyword": "REPLIT",
+    "browser": "brave-browser",
+    "url": "https://replit.com",
+    "description": "Replit"
+  },
+  {
+    "keyword": "CODEPEN",
+    "browser": "brave-browser",
+    "url": "https://codepen.io",
+    "description": "CodePen"
+  },
+  {
+    "keyword": "NOTION",
+    "browser": "brave-browser",
+    "url": "https://www.notion.so",
+    "description": "Notion"
+  },
+  {
+    "keyword": "TRELLO",
+    "browser": "brave-browser",
+    "url": "https://trello.com",
+    "description": "Trello"
+  },
+  {
+    "keyword": "ASANA",
+    "browser": "brave-browser",
+    "url": "https://app.asana.com",
+    "description": "Asana"
+  },
+  {
+    "keyword": "CANVA",
+    "browser": "brave-browser",
+    "url": "https://www.canva.com",
+    "description": "Canva"
+  },
+  {
+    "keyword": "FIGMA",
+    "browser": "brave-browser",
+    "url": "https://www.figma.com",
+    "description": "Figma"
+  },
+  {
+    "keyword": "DROPBOX",
+    "browser": "brave-browser",
+    "url": "https://www.dropbox.com",
+    "description": "Dropbox"
+  },
+  {
+    "keyword": "ONEDRIVE",
+    "browser": "brave-browser",
+    "url": "https://onedrive.live.com",
+    "description": "OneDrive"
+  },
+  {
+    "keyword": "CHATGPT",
+    "browser": "brave-browser",
+    "url": "https://chat.openai.com",
+    "description": "ChatGPT"
+  },
+  {
+    "keyword": "BARD",
+    "browser": "brave-browser",
+    "url": "https://gemini.google.com",
+    "description": "Google Gemini"
+  },
+  {
+    "keyword": "PERPLEXITY",
+    "browser": "brave-browser",
+    "url": "https://www.perplexity.ai",
+    "description": "Perplexity AI"
+  },
+  {
+    "keyword": "WIKI",
+    "browser": "brave-browser",
+    "url": "https://en.wikipedia.org",
+    "description": "Wikipedia"
+  },
+  {
+    "keyword": "BBC",
+    "browser": "brave-browser",
+    "url": "https://www.bbc.com",
+    "description": "BBC News"
+  },
+  {
+    "keyword": "CNN",
+    "browser": "brave-browser",
+    "url": "https://www.cnn.com",
+    "description": "CNN"
+  },
+  {
+    "keyword": "REUTERS",
+    "browser": "brave-browser",
+    "url": "https://www.reuters.com",
+    "description": "Reuters"
+  },
+  {
+    "keyword": "HN",
+    "browser": "brave-browser",
+    "url": "https://news.ycombinator.com",
+    "description": "Hacker News"
+  },
+  {
+    "keyword": "VERGE",
+    "browser": "brave-browser",
+    "url": "https://www.theverge.com",
+    "description": "The Verge"
+  },
+  {
+    "keyword": "TECHCRUNCH",
+    "browser": "brave-browser",
+    "url": "https://techcrunch.com",
+    "description": "TechCrunch"
+  },
+  {
+    "keyword": "ARSTECH",
+    "browser": "brave-browser",
+    "url": "https://arstechnica.com",
+    "description": "Ars Technica"
+  },
+  {
+    "keyword": "WEATHER",
+    "browser": "brave-browser",
+    "url": "https://weather.com",
+    "description": "Weather"
+  },
+  {
+    "keyword": "IMDB",
+    "browser": "brave-browser",
+    "url": "https://www.imdb.com",
+    "description": "IMDb Movies"
+  },
+  {
+    "keyword": "ROTTEN",
+    "browser": "brave-browser",
+    "url": "https://www.rottentomatoes.com",
+    "description": "Rotten Tomatoes"
+  },
+  {
+    "keyword": "CRUNCHY",
+    "browser": "brave-browser",
+    "url": "https://www.crunchyroll.com",
+    "description": "Crunchyroll"
+  },
+  {
+    "keyword": "SOUNDCLOUD",
+    "browser": "brave-browser",
+    "url": "https://soundcloud.com",
+    "description": "SoundCloud"
+  },
+  {
+    "keyword": "MYFITNESS",
+    "browser": "brave-browser",
+    "url": "https://www.myfitnesspal.com",
+    "description": "MyFitnessPal"
+  },
+  {
+    "keyword": "DUOLINGO",
+    "browser": "brave-browser",
+    "url": "https://www.duolingo.com",
+    "description": "Duolingo"
+  },
+  {
+    "keyword": "COURSES",
+    "browser": "brave-browser",
+    "url": "https://www.coursera.org",
+    "description": "Coursera"
+  },
+  {
+    "keyword": "UDEMY",
+    "browser": "brave-browser",
+    "url": "https://www.udemy.com",
+    "description": "Udemy"
+  },
+  {
+    "keyword": "MEDIUM",
+    "browser": "brave-browser",
+    "url": "https://medium.com",
+    "description": "Medium"
+  },
+  {
+    "keyword": "SUBSTACK",
+    "browser": "brave-browser",
+    "url": "https://substack.com",
+    "description": "Substack"
+  },
+  {
+    "keyword": "PDF",
+    "browser": "brave-browser",
+    "url": "https://www.ilovepdf.com",
+    "description": "iLovePDF Tools"
+  },
+  {
+    "keyword": "SCREENSHOT",
+    "browser": "brave-browser",
+    "url": "https://screenshot.guru",
+    "description": "Online Screenshot Tool"
+  },
+  {
+    "keyword": "QR",
+    "browser": "brave-browser",
+    "url": "https://www.qr-code-generator.com",
+    "description": "QR Code Generator"
+  },
+  {
+    "keyword": "REMOVEBG",
+    "browser": "brave-browser",
+    "url": "https://www.remove.bg",
+    "description": "Remove Background"
+  },
+  {
+    "keyword": "PIXABAY",
+    "browser": "brave-browser",
+    "url": "https://pixabay.com",
+    "description": "Free Stock Photos"
+  },
+  {
+    "keyword": "UNSPLASH",
+    "browser": "brave-browser",
+    "url": "https://unsplash.com",
+    "description": "Unsplash Photos"
+  },
+  {
+    "keyword": "GIPHY",
+    "browser": "brave-browser",
+    "url": "https://giphy.com",
+    "description": "GIPHY GIFs"
+  },
+  {
+    "keyword": "REDDITSUB",
+    "browser": "brave-browser",
+    "url": "https://old.reddit.com",
+    "description": "Reddit Old Interface"
+  }
+]

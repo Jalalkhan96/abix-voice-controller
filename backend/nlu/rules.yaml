@@ -1,0 +1,85 @@
+rules:
+  - name: open_app
+    pattern: "^open\\s+(?:the\\s+)?(.+)$"
+    intent: open_app
+    fields: [target]
+
+  - name: close_app
+    pattern: "^close\\s+(?:the\\s+)?(.+)$"
+    intent: close_app
+    fields: [target]
+
+  - name: close_window
+    pattern: "^close\\s+this\\s+window$"
+    intent: close_window
+    fields: []
+
+  - name: open_file
+    pattern: "^open\\s+(?:the\\s+)?(?:file\\s+)?(.+)$"
+    intent: open_file
+    fields: [target]
+
+  - name: create_file
+    pattern: "^create\\s+(?:a\\s+)?(?:new\\s+)?(?:file\\s+)?(?:called\\s+|named\\s+)?(.+)$"
+    intent: create_file
+    fields: [target]
+
+  - name: write_to_file
+    pattern: "^(?:write|save|put)\\s+['\"](.+?)['\"]\\s+(?:to|in|into)\\s+(?:the\\s+)?(?:file\\s+)?(.+)$"
+    intent: write_to_file
+    fields: [content, target]
+
+  - name: delete_file
+    pattern: "^(?:delete|remove|trash)\\s+(?:the\\s+)?(?:file\\s+)?(.+)$"
+    intent: delete_file
+    fields: [target]
+
+  - name: search_files
+    pattern: "^(?:search|find|look)\\s+(?:for\\s+)?(?:the\\s+)?(.+)$"
+    intent: search_files
+    fields: [query]
+
+  - name: run_command
+    pattern: "^(?:run|execute|do)\\s+(.+)$"
+    intent: run_command
+    fields: [command]
+
+  - name: system_info
+    pattern: "^(?:what(?:'s| is)\\s+)?(?:the\\s+)?(?:disk\\s+space|free\\s+space|memory|ram|cpu|system\\s+info)"
+    intent: system_info
+    fields: []
+
+  - name: list_directory
+    pattern: "^(?:list|show|what(?:'s| is))\\s+(?:in\\s+)?(?:the\\s+)?(?:directory|folder)\\s*(.+)?$"
+    intent: list_directory
+    fields: [target]
+
+  - name: media_play
+    pattern: "^(?:play|start)\\s+(?:the\\s+)?(?:music|media|song|audio)$"
+    intent: media_play
+    fields: []
+
+  - name: media_pause
+    pattern: "^(?:pause|stop|halt)\\s+(?:the\\s+)?(?:music|media|song|audio)?$"
+    intent: media_pause
+    fields: []
+
+  - name: media_next
+    pattern: "^(?:next|skip)\\s+(?:track|song)?$"
+    intent: media_next
+    fields: []
+
+  - name: volume_up
+    pattern: "^(?:turn\\s+up|increase|raise)\\s+(?:the\\s+)?volume$"
+    intent: volume_up
+    fields: []
+
+  - name: volume_down
+    pattern: "^(?:turn\\s+down|decrease|lower)\\s+(?:the\\s+)?volume$"
+    intent: volume_down
+    fields: []
+
+  - name: volume_mute
+    pattern: "^(?:mute|unmute)\\s+(?:the\\s+)?(?:volume|sound|audio)?$"
+    intent: volume_mute
+    fields: []

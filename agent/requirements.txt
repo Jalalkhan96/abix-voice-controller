@@ -1,0 +1,15 @@
+# Agent requirements (native host process)
+# AI-heavy services run in Docker — these are for host-level operations only.
+
+fastapi
+uvicorn[standard]
+websockets
+python-dotenv
+pyyaml
+numpy
+sounddevice
+pyautogui
+pynput
+psutil
+mediapipe
+opencv-python

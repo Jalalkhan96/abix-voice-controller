@@ -1,0 +1,45 @@
+agent:
+  greeting: "Hi, I'm ABIX — do you need any help?"
+  wake_word_phrase: "hi abix"
+  listen_duration_seconds: 10
+  audio_sample_rate: 16000
+  audio_channels: 1
+
+services:
+  stt:
+    url: "http://localhost:8001"
+    model: "base"
+  tts:
+    url: "http://localhost:8002"
+    voice: "en_US-lessac-medium"
+  nlu:
+    url: "http://localhost:8003"
+
+llm:
+  ollama_url: "http://localhost:11434"
+  model: "mistral"
+  enabled: true
+  timeout_seconds: 10
+
+semantic_search:
+  persist_dir: "data/chroma"
+  embedding_model: "all-MiniLM-L6-v2"
+  max_index_files: 500
+  search_top_k: 5
+
+safety:
+  log_path: "data/audit.db"
+  whitelist_path: "config/whitelist.yaml"
+  confirmation_timeout_seconds: 15
+
+ui:
+  websocket_port: 8765
+  caption_history_limit: 50
+  history_panel_limit: 100
+
+hand_tracking:
+  enabled: false
+  camera_index: 0
+  cursor_smoothing: 0.7
+  click_threshold: 0.03
+  scroll_threshold: 0.05
