@@ -1,9 +1,12 @@
 import { useState } from "react";
 import Orb3D from "./components/Orb3D";
 import Captions from "./components/Captions";
+import MicLevelMeter from "./components/MicLevelMeter";
+import ToastStack from "./components/ToastStack";
 import HistoryPanel from "./components/HistoryPanel";
 import SettingsPanel from "./components/SettingsPanel";
 import ShortcutsPanel from "./components/ShortcutsPanel";
+import CustomCommandsPanel from "./components/CustomCommandsPanel";
 import { useWebSocket } from "./hooks/useWebSocket";
 import "./App.css";
 
@@ -27,8 +30,13 @@ export default function App() {
     captions,
     history,
     pendingConfirmation,
+    handTracking,
+    audioLevel,
+    toasts,
+    dismissToast,
     sendCommand,
     sendConfirmation,
+    toggleHandTracking,
     wsRef,
   } = useWebSocket({
     onUiAction: (action) => {
@@ -79,6 +87,7 @@ export default function App() {
       <div className="mic-indicator">
         <div className={`mic-dot ${agentState === "listening" ? "active" : ""}`} />
         <span>MIC {agentState === "listening" ? "ACTIVE" : "READY"}</span>
+        <MicLevelMeter level={audioLevel} active={agentState === "listening"} />
       </div>
 
       {/* Panel toggle */}
@@ -170,6 +179,20 @@ export default function App() {
             >
               Shortcuts
             </button>
+            <button
+              className="panel-title"
+              style={{
+                background: panelTab === "commands" ? "var(--bg-elevated)" : "transparent",
+                border: "none",
+                padding: "6px 12px",
+                borderRadius: "4px",
+                cursor: "pointer",
+                color: panelTab === "commands" ? "var(--accent-amber)" : "var(--text-muted)",
+              }}
+              onClick={() => setPanelTab("commands")}
+            >
+              Commands
+            </button>
           </div>
           <button className="panel-close-btn" onClick={() => setPanelOpen(false)}>
             {"\u2715"}
@@ -179,9 +202,17 @@ export default function App() {
           {panelTab === "history" ? (
             <HistoryPanel history={history} />
           ) : panelTab === "settings" ? (
-            <SettingsPanel connected={connected} agentState={agentState} />
-          ) : (
+            <SettingsPanel
+              connected={connected}
+              agentState={agentState}
+              handTracking={handTracking}
+              onToggleHandTracking={toggleHandTracking}
+              ws={wsRef.current}
+            />
+          ) : panelTab === "shortcuts" ? (
             <ShortcutsPanel ws={wsRef.current} />
+          ) : (
+            <CustomCommandsPanel ws={wsRef.current} />
           )}
         </div>
       </div>
@@ -203,6 +234,8 @@ export default function App() {
           </div>
         </div>
       )}
+
+      <ToastStack toasts={toasts} onDismiss={dismissToast} />
     </div>
   );
 }

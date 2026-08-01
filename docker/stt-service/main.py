@@ -43,6 +43,9 @@ async def transcribe(request: Request):
         body = await request.body()
         audio_bytes = body
 
+        requested_language = request.query_params.get("language", "en")
+        whisper_language = None if requested_language in ("auto", "") else requested_language
+
         import tempfile
         with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
             tmp.write(audio_bytes)
@@ -51,7 +54,7 @@ async def transcribe(request: Request):
         model = get_model()
         segments, info = model.transcribe(
             tmp_path,
-            language="en",
+            language=whisper_language,
             beam_size=5,
             best_of=5,
             vad_filter=True,

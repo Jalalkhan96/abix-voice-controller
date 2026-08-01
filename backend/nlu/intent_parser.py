@@ -105,19 +105,19 @@ _RULES: list[tuple[str, re.Pattern[str], str, list[str]]] = [
         ["query"],
     ),
     (
-        "web_search",
-        re.compile(r"^(?:search|find|look\s+up)\s+(?:for\s+)?(.+?)(?:\s+(?:on|using|with)\s+(.+))?$", re.IGNORECASE),
-        "web_search",
-        ["query", "engine"],
-    ),
-    (
         "search_files",
         re.compile(
-            r"^(?:grep)\s+(?:for\s+)?(?:the\s+)?(.+)$",
+            r"^(?:search|grep)\s+(?:for\s+)?(?:the\s+)?(.+)$",
             re.IGNORECASE,
         ),
         "search_files",
         ["query"],
+    ),
+    (
+        "web_search",
+        re.compile(r"^(?:look\s+up)\s+(?:for\s+)?(.+?)(?:\s+(?:on|using|with)\s+(.+))?$", re.IGNORECASE),
+        "web_search",
+        ["query", "engine"],
     ),
     (
         "run_routine",

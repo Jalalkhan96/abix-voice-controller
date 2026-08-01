@@ -14,26 +14,35 @@ logging.basicConfig(level=logging.INFO)
 
 app = FastAPI(title="ABIX TTS Service")
 
-_model = None
-_model_lock = None
+_models: dict[str, object] = {}
 
 
-def get_model():
-    global _model
-    if _model is None:
-        try:
-            import piper
-            model_path = Path("/models")
-            voice_files = list(model_path.glob("*.onnx")) if model_path.exists() else []
-            if voice_files:
-                _model = piper.PiperVoice.load(str(voice_files[0]))
-                logger.info("Loaded Piper model: %s", voice_files[0].name)
-            else:
-                raise FileNotFoundError("No .onnx model found in /models")
-        except Exception as e:
-            logger.warning("Piper not available, using pyttsx3 fallback: %s", e)
-            _model = "pyttsx3"
-    return _model
+def get_model(voice_prefix: str | None = None):
+    cache_key = voice_prefix or "*"
+    if cache_key in _models:
+        return _models[cache_key]
+
+    try:
+        import piper
+        model_path = Path("/models")
+        voice_files = sorted(model_path.glob("*.onnx")) if model_path.exists() else []
+        chosen = None
+        if voice_prefix:
+            chosen = next((f for f in voice_files if f.name.startswith(voice_prefix)), None)
+            if chosen is None:
+                logger.warning("No voice model matching prefix '%s', falling back to default", voice_prefix)
+        if chosen is None and voice_files:
+            chosen = voice_files[0]
+        if chosen is None:
+            raise FileNotFoundError("No .onnx model found in /models")
+        model = piper.PiperVoice.load(str(chosen))
+        logger.info("Loaded Piper model: %s", chosen.name)
+    except Exception as e:
+        logger.warning("Piper not available, using pyttsx3 fallback: %s", e)
+        model = "pyttsx3"
+
+    _models[cache_key] = model
+    return model
 
 
 @app.on_event("startup")
@@ -50,8 +59,9 @@ async def synthesize(request: Request):
     try:
         body = await request.json()
         text = body.get("text", "")
+        voice_prefix = body.get("voice_prefix")
 
-        model = get_model()
+        model = get_model(voice_prefix)
 
         if model == "pyttsx3":
             import pyttsx3

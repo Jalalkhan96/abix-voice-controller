@@ -4,26 +4,16 @@ import logging
 from pathlib import Path
 
 import yaml
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import Depends, FastAPI, Header, HTTPException, WebSocket, WebSocketDisconnect, status
 from fastapi.middleware.cors import CORSMiddleware
 
+from backend.safety.auth_token import get_or_create_token
 from backend.safety.permissions import PermissionManager
 from backend.safety.audit_log import AuditLog
 from backend.router.command_router import CommandRouter
 
 logger = logging.getLogger("abix.backend")
 logging.basicConfig(level=logging.INFO)
-
-app = FastAPI(title="ABIX Backend")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 
 def _load_config() -> dict:
     config_path = Path(__file__).parent.parent / "config" / "settings.yaml"
@@ -34,6 +24,16 @@ def _load_config() -> dict:
 
 
 _config = _load_config()
+
+app = FastAPI(title="ABIX Backend")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=_config.get("backend", {}).get("cors_origins", ["http://localhost:9080"]),
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 _perms = PermissionManager(
     whitelist_path=str(Path(__file__).parent.parent / "config" / "whitelist.yaml")
 )
@@ -44,11 +44,18 @@ _audit = AuditLog(
     )
 )
 _router = CommandRouter(_perms, _audit)
+_auth_token = get_or_create_token()
 
 _ui_clients: set[WebSocket] = set()
 
 
+def require_token(x_abix_token: str = Header(default="")) -> None:
+    if x_abix_token != _auth_token:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or missing X-Abix-Token")
+
+
 async def broadcast_to_ui(message: dict) -> None:
+    global _ui_clients
     import json
     data = json.dumps(message)
     disconnected: set[WebSocket] = set()
@@ -60,13 +67,13 @@ async def broadcast_to_ui(message: dict) -> None:
     _ui_clients -= disconnected
 
 
-@app.post("/command")
+@app.post("/command", dependencies=[Depends(require_token)])
 async def execute_command(request: dict) -> dict:
     text = request.get("text", "")
     if not text:
         return {"error": "No text provided"}
 
-    result = _router.route(text)
+    result = await _router.route(text)
     return {
         "intent": result.intent.intent,
         "target": result.intent.target,
@@ -78,9 +85,9 @@ async def execute_command(request: dict) -> dict:
     }
 
 
-@app.post("/confirm")
+@app.post("/confirm", dependencies=[Depends(require_token)])
 async def confirm_command(request: dict) -> dict:
-    result = _router.execute_confirmed(
+    result = await _router.execute_confirmed(
         request.get("action", ""),
         request.get("args", {}),
         request.get("original_text", ""),
@@ -92,7 +99,7 @@ async def confirm_command(request: dict) -> dict:
     }
 
 
-@app.get("/history")
+@app.get("/history", dependencies=[Depends(require_token)])
 async def get_history(limit: int = 50) -> list[dict]:
     return _audit.get_recent(limit)
 
@@ -105,6 +112,18 @@ async def health() -> dict:
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
+
+    try:
+        first = await websocket.receive_json()
+    except Exception:
+        await websocket.close(code=1008)
+        return
+    if first.get("type") != "auth" or first.get("token") != _auth_token:
+        await websocket.send_json({"type": "auth_result", "success": False})
+        await websocket.close(code=1008)
+        return
+    await websocket.send_json({"type": "auth_result", "success": True})
+
     _ui_clients.add(websocket)
     logger.info("UI connected via /ws (%d total)", len(_ui_clients))
     try:
@@ -112,7 +131,7 @@ async def websocket_endpoint(websocket: WebSocket):
             data = await websocket.receive_json()
             if data.get("type") == "command":
                 text = data.get("text", "")
-                result = _router.route(text)
+                result = await _router.route(text)
                 await websocket.send_json({
                     "type": "command_result",
                     "intent": result.intent.intent,
@@ -122,7 +141,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     "confirmation_message": result.confirmation_message,
                 })
             elif data.get("type") == "confirm":
-                result = _router.execute_confirmed(
+                result = await _router.execute_confirmed(
                     data.get("action", ""),
                     data.get("args", {}),
                     data.get("original_text", ""),

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import functools
 import shutil
 import subprocess
 from pathlib import Path
@@ -13,6 +14,7 @@ class AppLauncher:
         Path("/var/lib/snapd/desktop/applications"),
     ]
 
+    @functools.lru_cache(maxsize=256)
     def find_executable(self, name: str) -> str | None:
         candidates = [name, name.lower(), name.capitalize(), name.title()]
 

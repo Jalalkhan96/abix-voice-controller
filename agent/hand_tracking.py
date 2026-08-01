@@ -77,7 +77,6 @@ class HandTracker:
             return frame
 
         import cv2
-        import mediapipe as mp
 
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         results = self._hands.process(rgb)

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import logging
-from dataclasses import dataclass
 
 import httpx
 
@@ -45,6 +44,36 @@ class LLMIntentParser:
         self._ollama_url = ollama_url.rstrip("/")
         self._model = model
         self._timeout = timeout
+        self._client: httpx.AsyncClient | None = None
+
+    def _get_client(self) -> httpx.AsyncClient:
+        if self._client is None:
+            self._client = httpx.AsyncClient()
+        return self._client
+
+    async def aclose(self) -> None:
+        if self._client is not None:
+            await self._client.aclose()
+            self._client = None
+
+    async def warm_up(self) -> bool:
+        """Send a lightweight request so Ollama loads the model before it's first needed."""
+        try:
+            client = self._get_client()
+            response = await client.post(
+                f"{self._ollama_url}/api/chat",
+                json={
+                    "model": self._model,
+                    "messages": [{"role": "user", "content": "hi"}],
+                    "stream": False,
+                    "options": {"num_predict": 1},
+                },
+                timeout=self._timeout,
+            )
+            return response.status_code == 200
+        except Exception as e:
+            logger.debug("Ollama warm-up failed (will retry lazily on first real request): %s", e)
+            return False
 
     async def parse(self, text: str) -> ParsedIntent | None:
         prompt = FALLBACK_PROMPT.format(text=text)
@@ -72,11 +101,11 @@ class LLMIntentParser:
             },
         }
         try:
-            async with httpx.AsyncClient() as client:
-                response = await client.post(url, json=payload, timeout=self._timeout)
-                response.raise_for_status()
-                data = response.json()
-                return data.get("message", {}).get("content", "")
+            client = self._get_client()
+            response = await client.post(url, json=payload, timeout=self._timeout)
+            response.raise_for_status()
+            data = response.json()
+            return data.get("message", {}).get("content", "")
         except httpx.ConnectError:
             logger.debug("Ollama not running at %s", self._ollama_url)
             return None

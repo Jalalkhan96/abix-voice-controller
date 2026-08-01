@@ -1,5 +1,8 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
+const fs = require("fs");
+
+const AUTH_TOKEN_PATH = path.join(__dirname, "..", "..", "data", ".auth_token");
 
 app.commandLine.appendSwitch("no-sandbox");
 
@@ -31,6 +34,14 @@ function createWindow() {
 
   win.on("closed", () => { win = null; });
 }
+
+ipcMain.handle("auth:getToken", () => {
+  try {
+    return fs.readFileSync(AUTH_TOKEN_PATH, "utf-8").trim();
+  } catch {
+    return null;
+  }
+});
 
 ipcMain.on("window:minimize", () => win?.minimize());
 ipcMain.on("window:maximize", () => {

@@ -11,6 +11,7 @@ import yaml
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from agent.ws_client import AgentWSServer, ServiceClient
+from backend.safety.auth_token import get_or_create_token
 from backend.safety.permissions import PermissionManager
 from backend.safety.audit_log import AuditLog
 from backend.router.command_router import CommandRouter
@@ -41,8 +42,10 @@ class AbixAgent:
             )
         )
         self._router = CommandRouter(self._perms, self._audit)
+        self._auth_token = get_or_create_token()
         self._ws_server = AgentWSServer(
-            port=self._config.get("ui", {}).get("websocket_port", 8765)
+            port=self._config.get("ui", {}).get("websocket_port", 8765),
+            token=self._auth_token,
         )
         self._ws_server.set_message_handler(self.handle_user_input)
         self._ws_server.set_on_no_clients(self._shutdown)
@@ -61,6 +64,12 @@ class AbixAgent:
         self._greeting = self._config.get("agent", {}).get(
             "greeting", "Hi, I'm ABIX — do you need any help?"
         )
+        locale_cfg = self._config.get("locale", {})
+        self._stt_language = locale_cfg.get("stt_language", "en")
+        self._tts_voice_prefix = locale_cfg.get("tts_voice_prefix")
+        self._wake_phrases = locale_cfg.get("wake_phrases", [
+            "hi abix", "hey abix", "hey jarvis", "hey a b i x", "hi a b i x", "abix",
+        ])
         self._state = "idle"
         self._pending_confirmation: dict | None = None
         self._hand_tracking_active = False
@@ -68,18 +77,9 @@ class AbixAgent:
         self._virtual_mouse = None
         self._last_speak_time = 0.0
 
-    @staticmethod
-    def _strip_wake_word(text: str) -> str:
-        wake_phrases = [
-            "hi abix",
-            "hey abix",
-            "hey jarvis",
-            "hey a b i x",
-            "hi a b i x",
-            "abix",
-        ]
+    def _strip_wake_word(self, text: str) -> str:
         lower = text.lower().strip().rstrip(".,!?")
-        for phrase in wake_phrases:
+        for phrase in self._wake_phrases:
             if lower.startswith(phrase):
                 rest = text[len(phrase):].strip().lstrip(", ")
                 if rest:
@@ -110,13 +110,19 @@ class AbixAgent:
             "role": role,
         })
 
+    async def _broadcast_audio_level(self, level: float) -> None:
+        await self._ws_server.broadcast({
+            "type": "audio_level",
+            "level": level,
+        })
+
     async def _speak(self, text: str) -> None:
         logger.info("TTS: '%s'", text)
         await self._update_state("speaking")
         await self._send_caption(text, role="abix")
 
         try:
-            result = await self._tts_client.synthesize(text)
+            result = await self._tts_client.synthesize(text, voice_prefix=self._tts_voice_prefix)
             if "error" not in result and "audio" in result:
                 audio_data = result["audio"]
                 if audio_data:
@@ -184,7 +190,7 @@ class AbixAgent:
             await self._toggle_hand_tracking(False)
             return
 
-        result = self._router.route(text)
+        result = await self._router.route(text)
         logger.info("Router: intent=%s response='%s' needs_confirmation=%s", result.intent.intent, result.response, result.needs_confirmation)
 
         if result.needs_confirmation:
@@ -211,10 +217,17 @@ class AbixAgent:
             "tier": int(result.tier),
         })
 
+    async def _broadcast_hand_tracking_state(self) -> None:
+        await self._ws_server.broadcast({
+            "type": "hand_tracking_state",
+            "active": self._hand_tracking_active,
+        })
+
     async def _toggle_hand_tracking(self, enable: bool) -> None:
         if enable:
             if self._hand_tracking_active:
                 await self._speak("Hand tracking is already on.")
+                await self._broadcast_hand_tracking_state()
                 return
             try:
                 from agent.hand_tracking import HandTracker
@@ -228,14 +241,17 @@ class AbixAgent:
             except Exception as e:
                 logger.error("Failed to start hand tracking: %s", e)
                 await self._speak("Could not start hand tracking. Is your camera connected?")
+            await self._broadcast_hand_tracking_state()
         else:
             if not self._hand_tracking_active:
                 await self._speak("Hand tracking is already off.")
+                await self._broadcast_hand_tracking_state()
                 return
             self._hand_tracking_active = False
             self._hand_tracker = None
             self._virtual_mouse = None
             await self._speak("Hand tracking is now off.")
+            await self._broadcast_hand_tracking_state()
 
     def _run_hand_tracking(self) -> None:
         import cv2
@@ -257,7 +273,7 @@ class AbixAgent:
         self._pending_confirmation = None
 
         if text_lower in ("yes", "y", "confirm", "proceed", "do it"):
-            result = self._router.execute_confirmed(
+            result = await self._router.execute_confirmed(
                 pending["action"],
                 pending["args"],
                 pending["original_text"],
@@ -283,10 +299,22 @@ class AbixAgent:
     async def _greet(self) -> None:
         await self._speak(self._greeting)
 
+    async def _plugin_reload_loop(self) -> None:
+        poll_seconds = self._config.get("plugins", {}).get("reload_poll_seconds", 5)
+        while True:
+            await asyncio.sleep(poll_seconds)
+            try:
+                if self._router.reload_plugins_if_changed():
+                    logger.info("Skills changed on disk — reloaded")
+            except Exception as e:
+                logger.warning("Plugin reload check failed: %s", e)
+
     async def run(self) -> None:
         logger.info("Starting ABIX agent...")
 
         asyncio.create_task(self._ws_server.start())
+        asyncio.create_task(self._router.warm_up())
+        asyncio.create_task(self._plugin_reload_loop())
 
         await asyncio.sleep(1)
 
@@ -321,6 +349,7 @@ class AbixAgent:
         while True:
             try:
                 await self._update_state("idle")
+                await self._broadcast_audio_level(0.0)
 
                 import time
                 since_speak = time.time() - self._last_speak_time
@@ -332,8 +361,15 @@ class AbixAgent:
                         self._update_state("listening"), loop
                     )
 
+                def on_level(level: float):
+                    asyncio.run_coroutine_threadsafe(
+                        self._broadcast_audio_level(level), loop
+                    )
+
+                import functools
                 audio, sample_rate = await loop.run_in_executor(
-                    None, listener.listen_for_utterance, on_speech_start
+                    None,
+                    functools.partial(listener.listen_for_utterance, on_speech_start, on_level),
                 )
 
                 if audio.size == 0:
@@ -347,7 +383,7 @@ class AbixAgent:
                 await self._update_state("thinking")
 
                 wav_bytes = capture.to_wav_bytes(audio, sample_rate)
-                result = await self._stt_client.transcribe(wav_bytes)
+                result = await self._stt_client.transcribe(wav_bytes, language=self._stt_language)
 
                 transcript = result.get("text", "")
                 logger.info("STT transcript: '%s'", transcript)

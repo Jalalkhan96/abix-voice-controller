@@ -114,7 +114,8 @@ class TestIntentParser:
 
 
 class TestCommandRouter:
-    def test_router_routes_to_file_ops(self):
+    @pytest.mark.asyncio
+    async def test_router_routes_to_file_ops(self):
         from backend.safety.permissions import PermissionManager
         from backend.safety.audit_log import AuditLog
         from backend.router.command_router import CommandRouter
@@ -130,11 +131,13 @@ class TestCommandRouter:
             audit = AuditLog(str(db_path))
             router = CommandRouter(perms, audit)
 
-            result = router.route("list directory .")
+            result = await router.route("list directory .")
+            audit.close()
             assert result.success is True
             assert "Contents of" in result.response or "empty" in result.response
 
-    def test_router_blocks_dangerous(self):
+    @pytest.mark.asyncio
+    async def test_router_blocks_dangerous(self):
         from backend.safety.permissions import PermissionManager
         from backend.safety.audit_log import AuditLog
         from backend.router.command_router import CommandRouter
@@ -150,11 +153,13 @@ class TestCommandRouter:
             audit = AuditLog(str(db_path))
             router = CommandRouter(perms, audit)
 
-            result = router.route("run rm -rf /")
+            result = await router.route("run rm -rf /")
+            audit.close()
             assert result.success is False
             assert "blocked" in result.response.lower()
 
-    def test_router_confirms_destructive(self):
+    @pytest.mark.asyncio
+    async def test_router_confirms_destructive(self):
         from backend.safety.permissions import PermissionManager
         from backend.safety.audit_log import AuditLog
         from backend.router.command_router import CommandRouter
@@ -170,6 +175,7 @@ class TestCommandRouter:
             audit = AuditLog(str(db_path))
             router = CommandRouter(perms, audit)
 
-            result = router.route("delete file.txt")
+            result = await router.route("delete file.txt")
+            audit.close()
             assert result.needs_confirmation is True
             assert "Confirm" in result.confirmation_message or "confirm" in result.confirmation_message

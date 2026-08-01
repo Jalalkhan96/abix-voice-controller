@@ -3,6 +3,7 @@ uvicorn[standard]
 websockets
 python-dotenv
 pyyaml
+ruamel.yaml
 sqlalchemy
 aiosqlite
 

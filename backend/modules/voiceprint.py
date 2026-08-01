@@ -1,10 +1,13 @@
 from __future__ import annotations
 
-import hashlib
 import json
 import logging
 from pathlib import Path
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import numpy as np
 
 logger = logging.getLogger("abix.voiceprint")
 
@@ -114,7 +117,7 @@ class VoiceprintVerifier:
 
         return None
 
-    def _extract_embedding(self, audio: "np.ndarray") -> "np.ndarray | None":  # type: ignore
+    def _extract_embedding(self, audio: np.ndarray) -> np.ndarray | None:
         import numpy as np
 
         if len(audio) < 1600:

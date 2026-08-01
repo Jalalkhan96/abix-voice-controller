@@ -29,6 +29,7 @@ class VoiceListener:
     def listen_for_utterance(
         self,
         on_speech_start: Callable[[], None] | None = None,
+        on_level: Callable[[float], None] | None = None,
     ) -> tuple[np.ndarray, int]:
         chunk_size = self._chunk_size
         silence_limit = int(_SILENCE_TIMEOUT * self._sample_rate / chunk_size)
@@ -66,6 +67,8 @@ class VoiceListener:
                 audio_np = audio_chunk[:, 0].astype(np.float32) / 32768.0
                 recorded.append(audio_np)
                 rms = float(np.sqrt(np.mean(audio_np ** 2)))
+                if on_level is not None:
+                    on_level(min(1.0, rms / (self._vad_threshold * 4)))
                 if rms < self._vad_threshold:
                     silence_chunks += 1
                     if silence_chunks >= silence_limit:

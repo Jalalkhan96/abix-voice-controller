@@ -4,7 +4,7 @@ import importlib
 import importlib.util
 import logging
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
@@ -56,6 +56,21 @@ class SkillRegistry:
         self._commands: dict[str, str] = {}
         self._dirs = [Path(d) for d in (skills_dirs or ["skills"])]
         self._dirs.extend([Path.home() / ".config" / "abix" / "skills"])
+        self._last_signature: frozenset[tuple[str, float]] = frozenset()
+
+    def _current_signature(self) -> frozenset[tuple[str, float]]:
+        sig: set[tuple[str, float]] = set()
+        for skills_dir in self._dirs:
+            if not skills_dir.exists():
+                continue
+            for skill_path in skills_dir.iterdir():
+                manifest_path = skill_path / "manifest.yaml"
+                if skill_path.is_dir() and manifest_path.exists():
+                    try:
+                        sig.add((str(manifest_path), manifest_path.stat().st_mtime))
+                    except OSError:
+                        pass
+        return frozenset(sig)
 
     def discover(self) -> int:
         count = 0
@@ -69,8 +84,31 @@ class SkillRegistry:
                         count += 1
                     except Exception as e:
                         logger.warning("Failed to load skill from %s: %s", skill_path, e)
+        self._last_signature = self._current_signature()
         logger.info("Discovered %d skills", count)
         return count
+
+    def reload_if_changed(self) -> bool:
+        """Re-run discovery if a skill manifest was added, removed, or edited.
+
+        Cheap enough to poll: this only stats manifest.yaml files, it doesn't
+        touch the skill modules themselves unless something actually changed.
+        Returns True if a reload happened.
+        """
+        current = self._current_signature()
+        if current == self._last_signature:
+            return False
+
+        for name, registered in list(self._skills.items()):
+            try:
+                registered.skill.on_unload()
+            except Exception as e:
+                logger.warning("Error unloading skill %s: %s", name, e)
+
+        self._skills.clear()
+        self._commands.clear()
+        self.discover()
+        return True
 
     def _load_skill(self, skill_dir: Path) -> None:
         import yaml

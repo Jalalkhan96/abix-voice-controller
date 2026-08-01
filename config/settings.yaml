@@ -5,6 +5,24 @@ agent:
   audio_sample_rate: 16000
   audio_channels: 1
 
+# Language configuration. Swapping locales requires downloading the matching
+# STT/TTS models (see scripts/download_models.sh) — this section just wires
+# the pipeline so nothing is hardcoded to English once those models exist.
+locale:
+  # ISO 639-1 code passed to the Whisper STT service. Use "auto" for
+  # language auto-detection instead of forcing one.
+  stt_language: "en"
+  # Prefix used to pick a Piper voice model out of the TTS service's
+  # /models directory (e.g. "es_ES" would match "es_ES-*.onnx").
+  tts_voice_prefix: "en_US"
+  wake_phrases:
+  - "hi abix"
+  - "hey abix"
+  - "hey jarvis"
+  - "hey a b i x"
+  - "hi a b i x"
+  - "abix"
+
 services:
   stt:
     url: "http://localhost:8001"
@@ -36,6 +54,19 @@ ui:
   websocket_port: 8765
   caption_history_limit: 50
   history_panel_limit: 100
+
+backend:
+  # Origins allowed to call the HTTP API (backend/main.py). The packaged
+  # Electron app loads over file:// and talks to the agent's WebSocket
+  # server directly, not this API — this only matters for the webpack dev
+  # server and any external tooling that calls the HTTP endpoints.
+  cors_origins:
+  - "http://localhost:9080"
+
+plugins:
+  # How often the agent checks the skills/ directory for added, removed, or
+  # edited manifest.yaml files and reloads without a restart.
+  reload_poll_seconds: 5
 
 hand_tracking:
   enabled: false

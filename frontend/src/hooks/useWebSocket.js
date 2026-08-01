@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 
 const WS_URL = "ws://localhost:8765";
 const RECONNECT_DELAY = 2000;
+const TOAST_DURATION_MS = 5000;
 
 export function useWebSocket({ onUiAction } = {}) {
   const [connected, setConnected] = useState(false);
@@ -9,6 +10,9 @@ export function useWebSocket({ onUiAction } = {}) {
   const [captions, setCaptions] = useState([]);
   const [history, setHistory] = useState([]);
   const [pendingConfirmation, setPendingConfirmation] = useState(null);
+  const [handTracking, setHandTracking] = useState(false);
+  const [audioLevel, setAudioLevel] = useState(0);
+  const [toasts, setToasts] = useState([]);
   const wsRef = useRef(null);
   const reconnectTimer = useRef(null);
 
@@ -19,6 +23,16 @@ export function useWebSocket({ onUiAction } = {}) {
     });
   }, []);
 
+  const dismissToast = useCallback((id) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+
+  const addToast = useCallback((message) => {
+    const id = Date.now() + Math.random();
+    setToasts((prev) => [...prev, { id, message }]);
+    setTimeout(() => dismissToast(id), TOAST_DURATION_MS);
+  }, [dismissToast]);
+
   const connect = useCallback(() => {
     if (wsRef.current?.readyState === WebSocket.OPEN) return;
 
@@ -26,14 +40,31 @@ export function useWebSocket({ onUiAction } = {}) {
       const ws = new WebSocket(WS_URL);
       wsRef.current = ws;
 
-      ws.onopen = () => setConnected(true);
+      ws.onopen = async () => {
+        const token = (await window.abix?.getAuthToken?.()) || "";
+        ws.send(JSON.stringify({ type: "auth", token }));
+      };
 
       ws.onmessage = (event) => {
         try {
           const msg = JSON.parse(event.data);
           switch (msg.type) {
+            case "auth_result":
+              if (msg.success) {
+                setConnected(true);
+              } else {
+                setConnected(false);
+                ws.close();
+              }
+              break;
             case "state_change":
               setAgentState(msg.state);
+              break;
+            case "hand_tracking_state":
+              setHandTracking(msg.active);
+              break;
+            case "audio_level":
+              setAudioLevel(msg.level);
               break;
             case "caption":
               addCaption(msg.text, msg.role);
@@ -50,6 +81,9 @@ export function useWebSocket({ onUiAction } = {}) {
                 },
                 ...prev,
               ].slice(0, 100));
+              if (!msg.success) {
+                addToast(msg.response || "Command failed");
+              }
               break;
             case "confirmation_needed":
               setPendingConfirmation({
@@ -74,7 +108,7 @@ export function useWebSocket({ onUiAction } = {}) {
     } catch {
       reconnectTimer.current = setTimeout(connect, RECONNECT_DELAY);
     }
-  }, [addCaption]);
+  }, [addCaption, addToast]);
 
   useEffect(() => {
     connect();
@@ -102,14 +136,23 @@ export function useWebSocket({ onUiAction } = {}) {
     }
   }, [pendingConfirmation]);
 
+  const toggleHandTracking = useCallback((enable) => {
+    sendCommand(enable ? "turn on hand tracking" : "turn off hand tracking");
+  }, [sendCommand]);
+
   return {
     connected,
     agentState,
     captions,
     history,
     pendingConfirmation,
+    handTracking,
+    audioLevel,
+    toasts,
+    dismissToast,
     sendCommand,
     sendConfirmation,
+    toggleHandTracking,
     setHistory,
     wsRef,
   };

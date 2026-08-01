@@ -78,7 +78,7 @@ class LinuxBackend(OSBackend):
 
     def focus_window(self, title: str) -> str:
         try:
-            result = subprocess.run(
+            subprocess.run(
                 ["wmctrl", "-a", title],
                 check=True,
                 capture_output=True,
@@ -121,7 +121,7 @@ class LinuxBackend(OSBackend):
             )
             return f"Volume set to {level}%"
         except (subprocess.CalledProcessError, FileNotFoundError):
-            return f"Could not set volume (pactl not available)"
+            return "Could not set volume (pactl not available)"
 
     def get_volume(self) -> int:
         try:

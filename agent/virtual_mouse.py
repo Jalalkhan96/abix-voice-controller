@@ -5,7 +5,6 @@ import math
 import time
 from dataclasses import dataclass
 
-import numpy as np
 
 logger = logging.getLogger("abix.virtual_mouse")
 
