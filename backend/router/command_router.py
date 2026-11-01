@@ -348,7 +348,7 @@ class CommandRouter:
         
         downloads = Path.home() / "Downloads"
         return self._sys_auto.open_file(str(downloads))
-        @command("open_file", PermissionTier.SAFE)
+        mand("open_file", PermissionTier.SAFE)
     async def _h_open_file(self, args: dict[str, str]) -> str:
         target = args.get("target", "")
         result = self._file_ops.open_file(target)
