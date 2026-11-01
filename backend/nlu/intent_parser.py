@@ -35,6 +35,12 @@ _RULES: list[tuple[str, re.Pattern[str], str, list[str]]] = [
         "open_file",
         ["target"],
     ),
+        (
+            "open_downloads",
+            re.compile(r"^open\s+(?:the\s+)?downloads(?:\s+folder)?$", re.IGNORECASE),
+            "open_downloads",
+            
+            []),
     (
         "open_app",
         re.compile(r"^open\s+(?:the\s+)?(.+)$", re.IGNORECASE),
