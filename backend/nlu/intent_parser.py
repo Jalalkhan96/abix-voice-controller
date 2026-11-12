@@ -42,6 +42,15 @@ _RULES: list[tuple[str, re.Pattern[str], str, list[str]]] = [
                         [],
         ),
     (
+        "tell_time",
+        re.compile(
+            r"^(?:what(?:'s| is)\s+the\s+time|what\s+time\s+is\s+it|tell\s+me\s+the\s+time|current\s+time)$",
+            re.IGNORECASE,
+        ),
+        "tell_time",
+        [],
+    ),
+    (
         "open_app",
         re.compile(r"^open\s+(?:the\s+)?(.+)$", re.IGNORECASE),
         "open_app",

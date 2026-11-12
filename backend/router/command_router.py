@@ -273,7 +273,7 @@ class CommandRouter:
         try:
             response = await self._dispatch(intent)
 
-            if intent.intent not in ("undo", "undo_list", "list_routines", "list_macros", "list_skills", "system_info", "list_directory", "open_downloads"):
+            if intent.intent not in ("undo", "undo_list", "list_routines", "list_macros", "list_skills", "system_info", "list_directory", "open_downloads", "tell_time"):
                 entry = build_undo_entry(intent.intent, intent.args.get("target", ""), response)
                 if entry:
                     self._undo.record(entry)
@@ -348,6 +348,12 @@ class CommandRouter:
         
         downloads = Path.home() / "Downloads"
         return self._sys_auto.open_file(str(downloads))
+
+    @command("tell_time", PermissionTier.SAFE)
+    async def _h_tell_time(self, args: dict[str, str]) -> str:
+        from datetime import datetime
+
+        return f"It's {datetime.now().strftime('%I:%M %p')}."
 
     @command("open_file", PermissionTier.SAFE)
     async def _h_open_file(self, args: dict[str, str]) -> str:
